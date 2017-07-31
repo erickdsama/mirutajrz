@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="initial-scale=1.0">
+    <meta charset="utf-8">
+    <title>KML Layers</title>
+    <style>
+        /* Always set the map height explicitly to define the size of the div
+         * element that contains the map. */
+        #map {
+            height: 100%;
+        }
+        /* Optional: Makes the sample page fill the window. */
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+<body>
+<div id="map"></div>
+<script>
+//31.6441892,-106.3837438,12
+    function initMap() {
+        var map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 11,
+            center: {lat: 31.6441892, lng: -106.3837438}
+        });
+
+        var ctaLayer = new google.maps.KmlLayer({
+            url: 'https://gist.githubusercontent.com/erickdsama/bc8aa5e9be11005e0aef81a30c3b5d9c/raw/a852163546bb52eadb9559286c9491b66b0d4e3f/file.kml',
+            map: map
+        });
+    }
+</script>
+<script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB2aJkKwaakfAgYg7mx_eol3-4iPFYdWXw&callback=initMap">
+</script>
+</body>
+</html>

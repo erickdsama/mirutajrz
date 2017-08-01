@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django.contrib.gis',
+    # 'django.contrib.gis',
 
     'inicio',
     'backprocess',
@@ -80,23 +80,23 @@ WSGI_APPLICATION = 'mirutajrz.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-#     }
-# }
-
-#aqui va postgis
 DATABASES = {
     'default': {
-         'ENGINE': 'django.contrib.gis.db.backends.postgis',
-         'NAME': 'db_rutajrz',
-         'USER': 'user_rutajrz',
-         'PASSWORD': 'rutajrz$$',
-
-    },
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    }
 }
+
+#aqui va postgis
+# DATABASES = {
+#     'default': {
+#          'ENGINE': 'django.contrib.gis.db.backends.postgis',
+#          'NAME': 'db_rutajrz',
+#          'USER': 'user_rutajrz',
+#          'PASSWORD': 'rutajrz$$',
+#
+#     },
+# }
 
 
 # Password validation

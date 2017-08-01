@@ -15,7 +15,7 @@ class Ruta(models.Model):
 
     class Meta:
         verbose_name = "Ruta"
-        verbose_name_plural = "Rustas"
+        verbose_name_plural = "Rutas"
 
 
 class InfoRutaUsuario(models.Model):
@@ -24,6 +24,13 @@ class InfoRutaUsuario(models.Model):
     t_total = models.IntegerField(default=0)
     rating = models.IntegerField(default=5)
 
+    def __unicode__(self):
+        return self.nombre
+
+    class Meta:
+        verbose_name = "Información de usuario"
+        verbose_name_plural = "Información de usuarios"
+
 
 class DetalleRuta(models.Model):
     ruta = models.ForeignKey(Ruta)
@@ -31,6 +38,14 @@ class DetalleRuta(models.Model):
     t_total = models.IntegerField(default=0)
     detalle = models.TextField(null=True)
 
-class RutaCoordendas(models.Model):
+    class Meta:
+        verbose_name = "Detalle ruta"
+        verbose_name_plural = "Detalle de rutas"
+
+
+class RutaCoordenda(models.Model):
     ruta = models.ForeignKey(Ruta)
-    coordenadas = models.Lat
+    coordenadas = models.CharField(max_length=150)
+
+    def __unicode__(self):
+        return self.coordenadas

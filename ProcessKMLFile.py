@@ -18,8 +18,10 @@ class ProcessKMLFile:
                 if hasattr(pm, "LineString"):
                     coord = str(pm.LineString.coordinates)
                     route_obj["coordinates"] = coord.replace("\n","").replace("            ","|").replace("        ","|").split("|")[1:-1]
-                    route_obj["colorLine"] = pm.Style.LineStyle.color
-                    route_obj["widthLine"] = pm.Style.LineStyle.width
+                    route_obj["colorLine"] = ""
+                    # route_obj["colorLine"] = pm.Style.LineStyle.color
+                    # route_obj["widthLine"] = pm.Style.LineStyle.width
+                    route_obj["widthLine"] = ""
 
                 if hasattr(pm, "Point"):
                     point =  str(pm.Point.coordinates)

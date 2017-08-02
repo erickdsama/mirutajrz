@@ -28,8 +28,12 @@
             center: {lat: 31.6441892, lng: -106.3837438}
         });
 
-        var ctaLayer = new google.maps.KmlLayer({
+        var ViveBus = new google.maps.KmlLayer({
             url: 'https://gist.githubusercontent.com/erickdsama/bc8aa5e9be11005e0aef81a30c3b5d9c/raw/a852163546bb52eadb9559286c9491b66b0d4e3f/file.kml',
+            map: map
+        });
+        var Bosques = new google.maps.KmlLayer({
+            url: 'https://gist.githubusercontent.com/erickdsama/373a1d0288abb017732b0f5a052cfeda/raw/180d1ddd90c4546fdff22b4d8088055667fdaeb6/bosques.kml',
             map: map
         });
     }

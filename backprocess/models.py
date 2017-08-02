@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.db import models
 
 
 # Create your models here.
+from django.db import models
+from django.contrib.gis.db import models as models_postgis
+
 class Ruta(models.Model):
     nombre = models.CharField(max_length=50)
     color = models.CharField(max_length=10)
@@ -43,9 +45,12 @@ class DetalleRuta(models.Model):
         verbose_name_plural = "Detalle de rutas"
 
 
-class RutaCoordenda(models.Model):
-    ruta = models.ForeignKey(Ruta)
-    coordenadas = models.CharField(max_length=150)
+class RutaCoordenda(models_postgis.Model):
+    ruta = models_postgis.ForeignKey(Ruta)
+    coordenadas = models_postgis.PointField()
+
+    def distance(self, point):
+        return self.coordenadas.distance(point) * 100
 
     def __unicode__(self):
-        return self.coordenadas
+        return self.ruta.nombre

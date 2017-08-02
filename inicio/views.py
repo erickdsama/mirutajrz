@@ -58,16 +58,16 @@ class ProcessFiles(View):
         kml = ProcessKMLFile(kml_file)
         route_obj = kml.file_to_objet()
 
-        # ruta = Ruta.objects.create(nombre=route_obj.get("name"), color=route_obj.get("colorLine"), kml="")
-        #
-        # coords = route_obj.get("coordinates")
-        #
-        # for coord in coords:
-        #     split_coord = coord.split(",")
-        #     x = split_coord[0]
-        #     y = split_coord[1]
-        #     z = split_coord[2]
-        #     point = GEOSGeometry("POINT({0} {1})".format(x, y))
-        #     RutaCoordenda.objects.create(ruta=ruta, coordenadas=point)
+        ruta = Ruta.objects.create(nombre=route_obj.get("name"), color=route_obj.get("colorLine"), kml="")
+
+        coords = route_obj.get("coordinates")
+
+        for coord in coords:
+            split_coord = coord.split(",")
+            x = split_coord[0]
+            y = split_coord[1]
+            z = split_coord[2]
+            point = GEOSGeometry("POINT({0} {1})".format(x, y))
+            RutaCoordenda.objects.create(ruta=ruta, coordenadas=point)
         # soriana henequen 31.6482147,-106.3911803
         # smart libramiento 31.627863,-106.354794

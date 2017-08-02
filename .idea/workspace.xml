@@ -3,11 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="40e07475-de40-49a5-86cf-4532c0f91934" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ProcessKMLFile.py" afterPath="$PROJECT_DIR$/ProcessKMLFile.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/backprocess/models.py" afterPath="$PROJECT_DIR$/backprocess/models.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/inicio/templates/inicio.html" afterPath="$PROJECT_DIR$/inicio/templates/inicio.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/inicio/views.py" afterPath="$PROJECT_DIR$/inicio/views.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mirutajrz/settings.py" afterPath="$PROJECT_DIR$/mirutajrz/settings.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -90,7 +86,7 @@
           <file leaf-file-name="views.py" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/inicio/views.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="566">
+                <state relative-caret-position="506">
                   <caret line="72" column="49" lean-forward="false" selection-start-line="72" selection-start-column="49" selection-end-line="72" selection-end-column="49" />
                   <folding>
                     <element signature="e#24#63#0" expanded="true" />
@@ -586,6 +582,14 @@
       <option name="presentableId" value="Default" />
       <updated>1501283077113</updated>
     </task>
+    <task id="LOCAL-00001" summary="todos los cambios ya estan!">
+      <created>1501707986645</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1501707986645</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TodoView">
@@ -628,6 +632,10 @@
   </component>
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="todos los cambios ya estan!" />
+    <option name="LAST_COMMIT_MESSAGE" value="todos los cambios ya estan!" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -876,7 +884,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/inicio/views.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="566">
+        <state relative-caret-position="506">
           <caret line="72" column="49" lean-forward="false" selection-start-line="72" selection-start-column="49" selection-end-line="72" selection-end-column="49" />
           <folding>
             <element signature="e#24#63#0" expanded="true" />

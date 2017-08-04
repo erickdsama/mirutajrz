@@ -20,21 +20,125 @@
 </head>
 <body>
 <div id="map"></div>
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+
 <script>
-//31.6441892,-106.3837438,12
+
+    var myLatlng = {lat: 31.6441892, lng: -106.3837438};
+    var markers = [];
+    var lines = [];
     function initMap() {
         var map = new google.maps.Map(document.getElementById('map'), {
             zoom: 11,
             center: {lat: 31.6441892, lng: -106.3837438}
         });
 
-        var ViveBus = new google.maps.KmlLayer({
+        linesJson = [
+            {
+                "name":"RUTA JZ TRIBUNAL",
+                "url":"https://gist.githubusercontent.com/erickdsama/0cb73c43885d9f28bee2905b36104d71/raw/e5f64888fc1553a90e848dfa9a0bdd856de59a1b/RUTA%2520JZ%2520TRIBUNAL.kml"
+            },
+            {
+                "name":"RUTA VALLE JRZ JUAREZ PORVENIR",
+                "url":"https://gist.githubusercontent.com/erickdsama/19e61b9cdca554be408e40e30e0e9735/raw/1d5397e0bfe2ca1e4465f62734bcf83d4f505abe/RUTA%2520VALLE%2520JRZ%2520JUAREZ%2520PORVENIR.kml"
+            },
+            {
+                "name":"RUTA 1-B TORRES POR AVENIDA",
+                "url":"https://gist.githubusercontent.com/erickdsama/9e5e2357f27168e27290644c8beab689/raw/5b9e7c53efcd76a4769d3fa9a48fb945160cea15/RUTA%25201-B%2520TORRES%2520POR%2520AVENIDA.kml"
+            },
+            {
+                "name":"RUTA 1-B TORRES POR HIEDRA",
+                "url":"https://gist.githubusercontent.com/erickdsama/c484b81e66abd6f0af27544c6894ae69/raw/e24f5d6ce079f5d496e7d717876beadf06e97a09/RUTA%25201-B%2520TORRES%2520POR%2520HIEDRA.kml"
+            },
+            {
+                "name":"RUTA 1-B VILLAS ALCALA",
+                "url":"https://gist.githubusercontent.com/erickdsama/d4877b8aa009880eeae2f62f7adf1baf/raw/d1c5fee7ef2d2d0dd14db9716ebdaf46ea48870b/RUTA%25201-B%2520VILLAS%2520ALCALA.kml"
+            },
+            {
+                "name":"RUTA JRZ AEROPUERTO ERENDIRA",
+                "url":"https://gist.githubusercontent.com/erickdsama/ed29406059773162136880220eb31839/raw/cde1f220de6d6e4034c4262677a5571b00b757fc/RUTA%2520JRZ%2520AEROPUERTO%2520ERENDIRA.kml"
+            },
+            {
+                "name":"RUTA JRZ AEROPUERTO KM18 SAN LORENZO",
+                "url":"https://gist.githubusercontent.com/erickdsama/a7399b92b4692af8e1120b25e794a410/raw/903812719cf64fbe19ccdb1709b529033454cd79/RUTA%2520JRZ%2520AEROPUERTO%2520KM18%2520SAN%2520LORENZO.kml"
+            },
+            {
+                "name":"RUTA JRZ AEROPUERTO MEZQUITAL",
+                "url":"https://gist.githubusercontent.com/erickdsama/64bb7f4a37cbb94cac9b401c0020eec0/raw/446b9187ade5a06ecb7ffc84b8be3dcef9542e14/RUTA%2520JRZ%2520AEROPUERTO%2520MEZQUITAL.kml"
+            },
+            {
+                "name":"RUTA JZ JILOTEPEC",
+                "url":"https://gist.githubusercontent.com/erickdsama/c757e1f360c1f48f420e3746499d6c9d/raw/567f63bd286351341a684583cba4caa03483687b/RUTA%2520JZ%2520JILOTEPEC.kml"
+            },
+            {
+                "name":"RUTA JZ PARAJES DE ORIENTE",
+                "url":"https://gist.githubusercontent.com/erickdsama/482152de6f4209497abff0d8eb877c45/raw/c16ef7b81982619cda3aaeb0baf14dc0b36bd175/RUTA%2520JZ%2520PARAJES%2520DE%2520ORIENTE.kml"
+            },
+            {
+                "name":"RUTA JZ TORRES DEL PRI",
+                "url":"https://gist.githubusercontent.com/erickdsama/b3201d6faa115f92dc465346b3a71cbe/raw/40532f3d5a66d5894c9542b47ca5230a5f630f01/RUTA%2520JZ%2520TORRES%2520DEL%2520PRI.kml"
+            },
+            {
+                "name":"RUTA LINEA PORNIENTE SUR",
+                "url":"https://gist.githubusercontent.com/erickdsama/5cf5c6702894e25138ffaa786a20532f/raw/bbfe78080eb4217a9d70144e4a0b1f23a57f8c93/RUTA%2520LINEA%2520PORNIENTE%2520SUR.kml"
+            }
+        ];
+
+        for(var i =0; i<linesJson.length; i++) {
+            lineObj = linesJson[i];
+            lines.push(
+                new google.maps.KmlLayer({
+                    url:lineObj.url,
+                    map: map
+                })
+            );
+        }
+
+
+        lines.push(new google.maps.KmlLayer({
             url: 'https://gist.githubusercontent.com/erickdsama/bc8aa5e9be11005e0aef81a30c3b5d9c/raw/c06af5f1c177b100de1c07b81bea29c9d1fb7c7a/file.kml',
             map: map
-        });
-        var Bosques = new google.maps.KmlLayer({
+        }));
+        lines.push(new google.maps.KmlLayer({
             url: 'https://gist.githubusercontent.com/erickdsama/373a1d0288abb017732b0f5a052cfeda/raw/180d1ddd90c4546fdff22b4d8088055667fdaeb6/bosques.kml',
             map: map
+        }));
+
+
+        function placeMarkerAndPanTo(latLng, map) {
+            if (markers.length >=  2) {
+                markers[0].setMap(null);
+                markers[0] = markers[1];
+                markers[0].title = "aqui andamos";
+                markers[1] = new google.maps.Marker({position: latLng, map: map});
+            }else{
+                markers.push(new google.maps.Marker({position: latLng, map: map}));
+            }
+            if (markers.length == 2) {
+                console.log("POST TO GET");
+
+
+                var settings = {
+                        "async": true,
+                        "crossDomain": true,
+                        "url": "http://localhost:8000/api/getruta/",
+                        "method": "POST",
+                    "data": {
+                        "lon_in": "-106.354794",
+                        "lat_in": "31.627863",
+                        "lon_go": "-106.3911803",
+                        "lat_go": " 31.6482147"
+                    }
+                };
+                $.ajax(settings).done(function (response) {
+                    console.log(response);
+                });
+
+
+            }
+        }
+        map.addListener('click', function(e) {
+            placeMarkerAndPanTo(e.latLng, map);
         });
     }
 </script>

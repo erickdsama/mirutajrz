@@ -15,6 +15,7 @@ class ProcessKMLFile:
             doc = parser.parse(file).getroot().Document
             route_obj["name"] =  doc.name
             for pm in doc.iterchildren():
+                print pm.__dict__
                 if hasattr(pm, "LineString"):
                     coord = str(pm.LineString.coordinates)
                     route_obj["coordinates"] = coord.replace("\n","").replace("            ","|").replace("        ","|").split("|")[1:-1]

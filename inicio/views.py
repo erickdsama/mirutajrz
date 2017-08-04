@@ -59,8 +59,10 @@ class ProcesaArchivo(View, LoginRequiredMixin):
     def get(self, request):
         #obtener todas las rutas
         rutas = Ruta.objects.all()
+        RutaCoordenda.objects.all().delete()
         for ruta in rutas:
-            kml_file =  os.path.join(BASE_DIR, str(ruta.kml))
+            kml_file =  os.path.join(BASE_DIR+"/media/", str(ruta.kml))
+            print kml_file
             kml = ProcessKMLFile(kml_file)
             route_obj = kml.file_to_objet()
             coords = route_obj.get("coordinates")
@@ -114,10 +116,11 @@ class GetRuta(APIView):
         ruta = None
         rutas_to_send = []
         for coordendada in coordendadas2:
-            # print "salgo", coordendada.distance, coordendada
+            print "salgo", coordendada.distance, coordendada
             obj = {}
             obj["id"] = coordendada.ruta.id
             obj["nombre"] = coordendada.ruta.nombre
+            obj["distance"] = str(coordendada.distance)
             obj["kml"] = str(coordendada.ruta.kml)
             rutas_to_send.append(obj)
 

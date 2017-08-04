@@ -92,7 +92,7 @@ class GetRuta(APIView):
         print "POINT({} {})".format(lon_in, lat_in)
         point_of_user = GEOSGeometry("POINT({} {})".format(lon_in, lat_in))
         point_to_go = GEOSGeometry("POINT({} {})".format(lon_go, lat_go))
-        max_distance = 250  # m
+        max_distance = 500  # m
 
         coordendadas = RutaCoordenda.objects.filter(
             coordenadas__distance_lt=(

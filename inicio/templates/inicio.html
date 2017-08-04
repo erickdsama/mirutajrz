@@ -117,6 +117,14 @@
             if (markers.length == 2) {
                 console.log("POST TO GET");
 
+                var lng_in = markers[0].getPosition().lng();
+                var lat_in = markers[0].getPosition().lat();
+                var lng_go = markers[1].getPosition().lng();
+                var lat_go = markers[1].getPosition().lat();
+
+{#                console.log(markers[0].getPosition().lat(),markers[0].getPosition().lng());#}
+{#                console.log(markers[1].getPosition().lat(), markers[0].getPosition().lng());#}
+{#                console.log(markers[0].getPosition());#}
 
                 var settings = {
                         "async": true,
@@ -124,10 +132,10 @@
                         "url": "http://localhost:8000/api/getruta/",
                         "method": "POST",
                     "data": {
-                        "lon_in": "-106.354794",
-                        "lat_in": "31.627863",
-                        "lon_go": "-106.3911803",
-                        "lat_go": " 31.6482147"
+                        "lon_in": lng_in,
+                        "lat_in": lat_in,
+                        "lon_go": lng_go,
+                        "lat_go": lat_go
                     }
                 };
                 $.ajax(settings).done(function (response) {

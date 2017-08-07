@@ -11,6 +11,7 @@ class Ruta(models.Model):
     nombre = models.CharField(max_length=50)
     color = models.CharField(max_length=10)
     kml = models.FileField(upload_to="kml_files")
+    http_kml = models.CharField(max_length=250,)
 
     def __unicode__(self):
         return self.nombre
@@ -18,7 +19,6 @@ class Ruta(models.Model):
     class Meta:
         verbose_name = "Ruta"
         verbose_name_plural = "Rutas"
-
 
 class InfoRutaUsuario(models.Model):
     ruta = models.ForeignKey(Ruta)

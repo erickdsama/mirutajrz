@@ -23,11 +23,15 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '!nbmq43h50s%u^0wds!8(!8aq8m@%n@uuf_wp2cjfr9lxt9swa'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 LOCAL = False
 
 ALLOWED_HOSTS = ["*"]
 
+#EMAILS TO SEND
+ADMINS = (
+    ('Erick Samaniego', 'erickdsama@gmail.com'),
+)
 
 # Application definition
 
@@ -94,8 +98,11 @@ WSGI_APPLICATION = 'mirutajrz.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.contrib.gis.db.backends.postgis',
+        'HOST': 'localhost',
         'NAME': 'mirutajrz',
-        'USER': 'postgres',
+        'USER': 'erickdsama2',
+        'PASSWORD': 'Ramses22..'
+
     },
 }
 
@@ -133,6 +140,14 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
+
+
+# Email Config
+EMAIL_HOST = 'smtp.sendgrid.net'
+EMAIL_HOST_USER = 'erickdsama'
+EMAIL_HOST_PASSWORD = 'Ramses22..'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
 
 
 # Static files (CSS, JavaScript, Images)

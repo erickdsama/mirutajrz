@@ -45,6 +45,19 @@ class DetalleRuta(models.Model):
         verbose_name_plural = "Detalle de rutas"
 
 
+class NodosRutas(models_postgis.Model):
+    ruta_a = models_postgis.ForeignKey(Ruta, related_name="ruta_nodo_a")
+    ruta_b = models_postgis.ForeignKey(Ruta, related_name="ruta_nodo_b")
+    nodo = models_postgis.PointField()
+
+    class Meta:
+        verbose_name = "Nodo"
+        verbose_name_plural = "Nodos"
+
+    def __unicode__(self):
+        return self.ruta_a.nombre
+
+
 class RutaCoordenda(models_postgis.Model):
     ruta = models_postgis.ForeignKey(Ruta)
     coordenadas = models_postgis.PointField()

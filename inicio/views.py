@@ -15,6 +15,7 @@ from rest_framework.views import APIView
 
 from ProcessKMLFile import ProcessKMLFile
 from backprocess.models import Ruta, RutaCoordenda
+from inicio.FormUpload import FormUpload
 from mirutajrz.settings import BASE_DIR
 
 
@@ -52,6 +53,28 @@ class InicioView(View):
             ruta = coordendada.ruta
 
         return render(request, self.template_name, context={"ruta": ruta})
+
+class UploadFile(View):
+    template_name = "upload.html"
+
+    def get(self, request):
+        form = FormUpload()
+        return render(request, self.template_name, context={
+            "form":form
+        })
+
+    def post(self, request):
+        form = FormUpload(request.POST, request.FILES)
+        if form.is_valid():
+            print "valido"
+            print request.FILES['kml']
+            ProcessKMLFile(request.FILES['kml'])
+        else:
+            print "no valido"
+        return render(request, self.template_name, context={
+            "form":form
+        })
+
 
 
 class ProcesaArchivo(View, LoginRequiredMixin):

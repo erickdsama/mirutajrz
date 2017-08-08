@@ -23,7 +23,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '!nbmq43h50s%u^0wds!8(!8aq8m@%n@uuf_wp2cjfr9lxt9swa'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
+LOCAL = False
 
 ALLOWED_HOSTS = ["*"]
 
@@ -92,9 +93,10 @@ WSGI_APPLICATION = 'mirutajrz.wsgi.application'
 # #aqui va postgis
 DATABASES = {
     'default': {
-         'ENGINE': 'django.contrib.gis.db.backends.postgis',
-         'NAME': 'mirutajrz',
-         'USER': 'erickdsama',
+        'ENGINE': 'django.contrib.gis.db.backends.postgis',
+        'NAME': 'mirutajrz',
+        'USER': 'erickdsama',
+        'PASSWORD': 'Ramses22..'
     },
 }
 
@@ -141,3 +143,12 @@ STATIC_URL = '/static/'
 MEDIA_ROOT = 'media'
 MEDIA_URL = '/media/'
 TEMPLATE_DIRS = (os.path.join(BASE_DIR,  'templates'),)
+
+if LOCAL:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.contrib.gis.db.backends.postgis',
+            'NAME': 'mirutajrz',
+            'USER': 'erickdsama',
+        },
+    }

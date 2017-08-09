@@ -12,6 +12,7 @@ class Ruta(models.Model):
     color = models.CharField(max_length=10)
     kml = models.FileField(upload_to="kml_files")
     http_kml = models.CharField(max_length=250,)
+    puntos = models_postgis.LineStringField(null=True)
 
     def __unicode__(self):
         return self.nombre
@@ -55,12 +56,13 @@ class NodosRutas(models_postgis.Model):
         verbose_name_plural = "Nodos"
 
     def __unicode__(self):
-        return self.ruta_a.nombre
+        return "{} | {}".format(self.ruta_a.nombre,self.ruta_b.nombre)
 
 
 class RutaCoordenda(models_postgis.Model):
     ruta = models_postgis.ForeignKey(Ruta)
     coordenadas = models_postgis.PointField()
+    # linea = models_postgis.LineStringField(null=True)
 
     def distance(self, point):
         return self.coordenadas.distance(point) * 100

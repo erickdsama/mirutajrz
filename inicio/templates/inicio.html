@@ -16,6 +16,24 @@
             margin: 0;
             padding: 0;
         }
+        ul{
+            list-style: none;
+            padding: 0;
+        }
+        li{
+            font-size: 12px;
+            padding: 4px;
+        }
+        li:hover{
+            background: #dedede;
+        }
+        h4{
+            padding: 8px;
+            box-sizing: border-box;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
     </style>
 </head>
 <body>
@@ -42,7 +60,9 @@
         lines.push(
             new google.maps.KmlLayer({
                 url:lineObj.url,
-                map: map
+                map: map,
+                preserveViewport: true
+
             })
         );
 
@@ -55,7 +75,9 @@
         lines.push(
             new google.maps.KmlLayer({
                 url:lineObj.url,
-                map: map
+                map: map,
+                preserveViewport: true
+
             })
         );
     }
@@ -69,7 +91,6 @@
             zoom: 15,
             center: {lat: 31.6441892, lng: -106.3837438}
         });
-
         function placeMarkerAndPanTo(latLng, map) {
             if (markers.length >=  2) {
                 markers[0].setMap(null);
@@ -87,7 +108,7 @@
                 var settings = {
                         "async": true,
                         "crossDomain": true,
-                        "url": "http://localhost:8000/api/getruta/",
+                        "url": "http://192.168.1.51:8000/api/getruta/",
                         "method": "POST",
                     "data": {
                         "lon_in": lng_in,
@@ -105,7 +126,7 @@
                     container.html("");
                     for(var j =0; j<response.length; j++) {
                         lineObj = response[j];
-                        $obj[j] = $('<div style="border-radius: 3px; float:left; box-shadow: 0 0 2px #333; width: 200px; height: 180px; background: white; " onClick="encenderRuta('+j+')" ></div>');
+                        $obj[j] = $('<div style="border-radius: 3px; float:left; margin:8px; box-shadow: 0 0 2px #333; width: 200px; height: 180px; background: white; " onClick="encenderRuta('+j+')" ></div>');
                         $obj[j].append("<h4>" + lineObj.nombre + "</h4>");
                         container.append($obj[j]);
 

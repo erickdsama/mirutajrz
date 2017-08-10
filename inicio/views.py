@@ -147,7 +147,7 @@ class GetRuta(APIView):
             print ruta
             crosses =  Ruta.objects.filter(puntos__intersects=ruta.puntos, pk__in=llegadas_ids)
             ruta_obj = {}
-            ruta_obj["ruta"] = ruta.nombre
+            ruta_obj["nombre"] = ruta.nombre
             ruta_obj["url"] = ruta.http_kml
             opcion = []
 

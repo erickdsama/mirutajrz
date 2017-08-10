@@ -25,49 +25,7 @@ class InicioView(View):
     template_name = "inicio.html"
 
     def get(self, request):
-        # soriana henequen 31.6482147,-106.3911803
-
-        point_of_user = GEOSGeometry("POINT({} {})".format(-106.38932704925537, 31.64799289324259))
-        point_to_go = GEOSGeometry("POINT({} {})".format(-106.39343619346619, 31.64873268974223))
-
-        rutas_salida = Ruta.objects.filter(puntos__distance_lte=(point_of_user, Distance(chain=100)))
-        rutas_salida = rutas_salida.filter(puntos__distance_lte=(point_to_go, Distance(chain=100)))
-
-        print "r", rutas_salida
-
-        rutas_llegada = GEOSGeometry("POINT({} {})".format(-106.354794, 31.627863))
-        # max_distance = 250  # m
-        #
-        # coordendadas = RutaCoordenda.objects.filter(
-        #     coordenadas__distance_lt=(
-        #         point_of_user,
-        #         Distance(m=max_distance)
-        #     ),
-        # ).annotate(distance=qDistance('coordenadas', point_of_user)).distinct("ruta")
-        #
-        # ids = []
-        # for coordendada in coordendadas:
-        #     print coordendada
-        #     ids.append(coordendada.ruta_id)
-        #
-        # coordendadas2 = RutaCoordenda.objects.filter(coordenadas__distance_lt=(
-        #     point_to_go,
-        #     Distance(m=max_distance)
-        # ),
-        #     ruta__id__in=ids
-        # ).annotate(distance=qDistance('coordenadas', point_to_go)).distinct("ruta")
-
-
-        ruta1 = Ruta.objects.get(pk=42)
-        print rutas_salida
-        print Ruta.objects.filter(puntos__crosses=rutas_salida[0].puntos)
-
-        ruta = None
-        # for coordendada in coordendadas2:
-        #     # print "salgo", coordendada.distance, coordendada
-        #     ruta = coordendada.ruta
-
-        return render(request, self.template_name, context={"ruta": ruta})
+        return render(request, self.template_name)
 
 
 class UploadFile(View):
@@ -102,29 +60,8 @@ class UploadFile(View):
                 z = split_coord[2]
                 point = GEOSGeometry("POINT({0} {1})".format(x, y))
                 lista.append(point)
-
-                # checa los puntos actuales con las rutas ya guardadas
-                # nodos = RutaCoordenda.objects.filter(
-                #     coordenadas__distance_lt=(
-                #         point,
-                #         Distance(m=10)  # distance node
-                #     ),
-                # # ).annotate(distance=qDistance('coordenadas', point)).distinct("ruta")
-                #
-                #
-                #
-                #
-                # for nodo in nodos:
-                #     NodosRutas.objects.create(ruta_a = ruta, nodo=point, ruta_b=nodo.ruta)
-                #
-                # lista_nodos.append(nodos)
-                # print "nodo", point, nodos
             ruta.puntos = LineString(lista)
-            # RutaCoordenda.objects.create(ruta= ruta,coordenadas=lista[0], linea=ls)
             ruta.save()
-            print lista_nodos
-
-
         else:
             print "no valido"
         return render(request, self.template_name, context={
@@ -132,7 +69,6 @@ class UploadFile(View):
         })
 
     def handle_uploaded_file(self, f):
-
         with open(os.path.join(BASE_DIR, "media/kml_files/") + str(f), 'wb+') as destination:
             for chunk in f.chunks():
                 destination.write(chunk)
@@ -172,45 +108,24 @@ class GetRuta(APIView):
         lon_in = data_post.get("lon_in")  # x
         lat_go = data_post.get("lat_go")  # y
         lon_go = data_post.get("lon_go")  # x
-        print "POINT({} {})".format(lon_in, lat_in)
         point_of_user = GEOSGeometry("POINT({} {})".format(lon_in, lat_in))
         point_to_go = GEOSGeometry("POINT({} {})".format(lon_go, lat_go))
 
+        #revisa si se puede llegar en una sola ruta
         rutas_salida = Ruta.objects.filter(puntos__distance_lte=(point_of_user, Distance(m=self.max_distance)))
         rutas_salida = rutas_salida.filter(puntos__distance_lte=(point_to_go, Distance(m=self.max_distance)))
 
-
+        #en caso de no poder intenta encontrar una ruta que transborde
         if len(rutas_salida) <= 0:
             rutas_salida = self.transborde(point_of_user, point_to_go)
+            return Response(data=rutas_salida, status=200)
 
-        # coordendadas = RutaCoordenda.objects.filter(
-        #     coordenadas__distance_lt=(
-        #         point_of_user,
-        #         Distance(m=self.max_distance)
-        #     ),
-        # ).annotate(distance=qDistance('coordenadas', point_of_user)).distinct("ruta")
-        #
-        # ids = []
-        # for coordendada in coordendadas:
-        #     print coordendada
-        #     ids.append(coordendada.ruta_id)
-        #
-        # coordendadas2 = RutaCoordenda.objects.filter(coordenadas__distance_lt=(
-        #     point_to_go,
-        #     Distance(m=self.max_distance)
-        # ),
-        #     ruta__id__in=ids
-        # ).annotate(distance=qDistance('coordenadas', point_to_go)).distinct("ruta")
-        #
         # ruta = None
         rutas_to_send = []
-        print rutas_salida
         for ruta in rutas_salida:
-            print ruta.__dict__
             obj = {}
             obj["id"] = ruta.pk
             obj["nombre"] =ruta.nombre
-            # obj["distance"] = str(coordendada.distance)
             obj["url"] = str(ruta.http_kml)
             obj["kml"] = str(ruta.kml)
             rutas_to_send.append(obj)
@@ -218,7 +133,6 @@ class GetRuta(APIView):
         if len(rutas_to_send) > 0:
             return Response(data=rutas_to_send, status=200)
         else:
-            # try to get transboarding route
             rutas_to_send = self.transborde(point_of_user, point_to_go)
             return Response(data=rutas_to_send, status=200)
 
@@ -231,9 +145,22 @@ class GetRuta(APIView):
         opciones = []
         for ruta in rutas_salida:
             print ruta
-            cross =  Ruta.objects.filter(puntos__intersects=ruta.puntos, pk__in=llegadas_ids)
-            opciones.append(ruta)
-            opciones.append(cross[0])
+            crosses =  Ruta.objects.filter(puntos__intersects=ruta.puntos, pk__in=llegadas_ids)
+            ruta_obj = {}
+            ruta_obj["ruta"] = ruta.nombre
+            ruta_obj["url"] = ruta.http_kml
+            opcion = []
+
+            for cross in crosses:
+                cross_obj = {}
+                cross_obj["nombre"] = cross.nombre
+                cross_obj["url"] = cross.http_kml
+
+                opcion.append(cross_obj)
+
+            ruta_obj["transborde"] = opcion
+
+            opciones.append(ruta_obj)
         return opciones
 
     def checas_rutas(self, id, rutas):

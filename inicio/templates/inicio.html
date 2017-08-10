@@ -19,17 +19,54 @@
     </style>
 </head>
 <body>
+
+<div id="option-container" style="position: absolute; min-width:300px; width: auto; height: auto; bottom: 0; left: 0; right: 0; padding: 16px; min-height: 200px; z-index: 100000; ">
+
+</div>
+
+
 <div id="map"></div>
 <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
 
 <script>
 
-    var myLatlng = {lat: 31.6441892, lng: -106.3837438};
     var markers = [];
     var lines = [];
+    var dataGet = [];
+    var map = undefined;
+    function encenderRuta(id_r) {
+{#        limpiarRutas();#}
+{#        lines = [];#}
+        console.log("Aqui ando?");
+        lineObj = dataGet[id_r];
+        lines.push(
+            new google.maps.KmlLayer({
+                url:lineObj.url,
+                map: map
+            })
+        );
+
+    }
+    function encenderTransborde(id_r, id_t) {
+        limpiarRutas();
+        lines = [];
+        console.log("Aqui deberia andar?");
+        lineObj = dataGet[id_r].transborde[id_t];
+        lines.push(
+            new google.maps.KmlLayer({
+                url:lineObj.url,
+                map: map
+            })
+        );
+    }
+    function limpiarRutas() {
+        for(var i =0; i<lines.length; i++) {
+            lines[i].setMap(null);
+        }
+    }
     function initMap() {
-        var map = new google.maps.Map(document.getElementById('map'), {
-            zoom: 11,
+        map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 15,
             center: {lat: 31.6441892, lng: -106.3837438}
         });
 
@@ -60,18 +97,44 @@
                     }
                 };
                 $.ajax(settings).done(function (response) {
-                    for(var i =0; i<lines.length; i++) {
-                        lines[i].setMap(null);
-                    }
+                    limpiarRutas();
                     lines = [];
+                    var container = $("#option-container");
+                    var $obj = [];
+                    dataGet = response;
+                    container.html("");
                     for(var j =0; j<response.length; j++) {
                         lineObj = response[j];
-                        lines.push(
-                            new google.maps.KmlLayer({
-                                url:lineObj.url,
-                                map: map
-                            })
-                        );
+                        $obj[j] = $('<div style="border-radius: 3px; float:left; box-shadow: 0 0 2px #333; width: 200px; height: 180px; background: white; " onClick="encenderRuta('+j+')" ></div>');
+                        $obj[j].append("<h4>" + lineObj.nombre + "</h4>");
+                        container.append($obj[j]);
+
+
+{#                        lines.push(#}
+{#                            new google.maps.KmlLayer({#}
+{#                                url:lineObj.url,#}
+{#                                map: map#}
+{#                            })#}
+{#                        );#}
+                        if (lineObj.transborde != undefined) {
+                            transArray = lineObj.transborde;
+                            var $ul = $("<ul></ul>");
+                            var $li = [];
+                            for (var k = 0; k < transArray.length; k++) {
+                                lineObj = transArray[k];
+
+                                $li[k] = "<li style='cursor:pointer' onClick='encenderTransborde("+j+","+k+")' >" + lineObj.nombre + "</li>";
+                                $ul.append($li[k]);
+
+{#                                lines.push(#}
+{#                                    new google.maps.KmlLayer({#}
+{#                                        url: lineObj.url,#}
+{#                                        map: map#}
+{#                                    })#}
+{#                                );#}
+                            }
+                            $obj[j].append($ul);
+                        }
                     }
                 });
             }

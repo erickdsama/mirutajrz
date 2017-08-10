@@ -59,7 +59,7 @@
         lineObj = dataGet[id_r];
         lines.push(
             new google.maps.KmlLayer({
-                url:lineObj.url,
+                url: "http://mirutajuarez.com/media/"+lineObj.kml,
                 map: map,
                 preserveViewport: true
 
@@ -74,7 +74,7 @@
         lineObj = dataGet[id_r].transborde[id_t];
         lines.push(
             new google.maps.KmlLayer({
-                url:lineObj.url,
+                url: "http://mirutajuarez.com/media/"+lineObj.kml,
                 map: map,
                 preserveViewport: true
 
@@ -108,7 +108,7 @@
                 var settings = {
                         "async": true,
                         "crossDomain": true,
-                        "url": "http://192.168.1.51:8000/api/getruta/",
+                        "url": "https://23fa169e.ngrok.io/api/getruta/",
                         "method": "POST",
                     "data": {
                         "lon_in": lng_in,

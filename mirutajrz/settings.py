@@ -26,7 +26,7 @@ SECRET_KEY = '!nbmq43h50s%u^0wds!8(!8aq8m@%n@uuf_wp2cjfr9lxt9swa'
 DEBUG = True
 LOCAL = True
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ["www.mirutajuarez.com","mirutajuarez.com"]
 
 #EMAILS TO SEND
 ADMINS = (
@@ -156,6 +156,8 @@ EMAIL_USE_TLS = True
 STATIC_URL = '/static/'
 MEDIA_ROOT = 'media'
 MEDIA_URL = '/media/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
+
 TEMPLATE_DIRS = (os.path.join(BASE_DIR,  'templates'),)
 
 if LOCAL:

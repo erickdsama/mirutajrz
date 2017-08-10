@@ -100,7 +100,7 @@ class ProcesaArchivo(View, LoginRequiredMixin):
 
 
 class GetRuta(APIView):
-    max_distance = 100  # m
+    max_distance = 300  # m
 
     def post(self, request):
         data_post = request.data
@@ -155,6 +155,7 @@ class GetRuta(APIView):
                 cross_obj = {}
                 cross_obj["nombre"] = cross.nombre
                 cross_obj["url"] = cross.http_kml
+                cross_obj["kml"] = cross.kml
 
                 opcion.append(cross_obj)
 

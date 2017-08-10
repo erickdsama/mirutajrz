@@ -149,6 +149,7 @@ class GetRuta(APIView):
             ruta_obj = {}
             ruta_obj["nombre"] = ruta.nombre
             ruta_obj["url"] = ruta.http_kml
+            ruta_obj["kml"] = ruta.kml
             opcion = []
 
             for cross in crosses:

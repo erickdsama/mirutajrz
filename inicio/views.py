@@ -155,7 +155,7 @@ class GetRuta(APIView):
                 cross_obj = {}
                 cross_obj["nombre"] = cross.nombre
                 cross_obj["url"] = cross.http_kml
-                cross_obj["kml"] = cross.kml
+                cross_obj["kml"] = str(cross.kml)
 
                 opcion.append(cross_obj)
 

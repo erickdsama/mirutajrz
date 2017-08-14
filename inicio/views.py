@@ -147,22 +147,23 @@ class GetRuta(APIView):
             print ruta
             crosses =  Ruta.objects.filter(puntos__intersects=ruta.puntos, pk__in=llegadas_ids)
             ruta_obj = {}
-            ruta_obj["nombre"] = ruta.nombre
-            ruta_obj["url"] = ruta.http_kml
-            ruta_obj["kml"] = str(ruta.kml)
-            opcion = []
+            if len(crosses) > 0:
+                ruta_obj["nombre"] = ruta.nombre
+                ruta_obj["url"] = ruta.http_kml
+                ruta_obj["kml"] = str(ruta.kml)
+                opcion = []
 
-            for cross in crosses:
-                cross_obj = {}
-                cross_obj["nombre"] = cross.nombre
-                cross_obj["url"] = cross.http_kml
-                cross_obj["kml"] = str(cross.kml)
+                for cross in crosses:
+                    cross_obj = {}
+                    cross_obj["nombre"] = cross.nombre
+                    cross_obj["url"] = cross.http_kml
+                    cross_obj["kml"] = str(cross.kml)
 
-                opcion.append(cross_obj)
+                    opcion.append(cross_obj)
 
-            ruta_obj["transborde"] = opcion
+                ruta_obj["transborde"] = opcion
 
-            opciones.append(ruta_obj)
+                opciones.append(ruta_obj)
         return opciones
 
     def checas_rutas(self, id, rutas):

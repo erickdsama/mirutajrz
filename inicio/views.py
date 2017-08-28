@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 import os
+import requests
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.gis.db.models.functions import Distance as qDistance

@@ -180,7 +180,7 @@ class SteperByRoutes(APIView):
         data_post = request.data
         lat_go = data_post.get("lat_go", "")
         lon_go = data_post.get("lon_go", "")
-        lat_in = data_post.get("lon_go", "")
+        lat_in = data_post.get("lat_go", "")
         lon_in = data_post.get("lon_go", "")
         ruta_a = data_post.get("ruta_a", None)
         ruta_b = data_post.get("ruta_b", None)

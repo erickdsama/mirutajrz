@@ -151,6 +151,7 @@ class GetRuta(APIView):
                 ruta_obj["nombre"] = ruta.nombre
                 ruta_obj["url"] = ruta.http_kml
                 ruta_obj["kml"] = str(ruta.kml)
+                ruta_obj["id"] = str(ruta.pk)
                 opcion = []
 
                 for cross in crosses:
@@ -158,6 +159,7 @@ class GetRuta(APIView):
                     cross_obj["nombre"] = cross.nombre
                     cross_obj["url"] = cross.http_kml
                     cross_obj["kml"] = str(cross.kml)
+                    cross_obj["id"] = str(cross.pk)
 
                     opcion.append(cross_obj)
 
@@ -199,9 +201,5 @@ class SteperByRoutes(APIView):
         place_in = json_in.get("results")[0].get("formatted_address")
 
         # section to cross routes
-
-
-
-
 
         return JsonResponse(request_go.json(), safe=False)

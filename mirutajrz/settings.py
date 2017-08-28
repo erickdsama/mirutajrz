@@ -23,10 +23,11 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '!nbmq43h50s%u^0wds!8(!8aq8m@%n@uuf_wp2cjfr9lxt9swa'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
-LOCAL = False
+DEBUG = True
+LOCAL = True
 
 ALLOWED_HOSTS = ["www.mirutajuarez.com","mirutajuarez.com"]
+ALLOWED_HOSTS = ["*"]
 
 #EMAILS TO SEND
 ADMINS = (

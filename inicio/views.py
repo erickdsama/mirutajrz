@@ -128,11 +128,7 @@ class GetRuta(APIView):
         # ruta = None
         rutas_to_send = []
         for ruta in rutas_salida:
-            obj = {}
-            obj["id"] = ruta.pk
-            obj["nombre"] = ruta.nombre
-            obj["url"] = str(ruta.http_kml)
-            obj["kml"] = str(ruta.kml)
+            obj = {"id": ruta.pk, "nombre": ruta.nombre, "url": str(ruta.http_kml), "kml": str(ruta.kml)}
             rutas_to_send.append(obj)
 
         if len(rutas_to_send) > 0:
@@ -190,7 +186,8 @@ class SteperByRoutes(APIView):
         ruta_a = data_post.get("ruta_a", None)
         ruta_b = data_post.get("ruta_b", None)
 
-        url = "https://maps.googleapis.com/maps/api/geocode/json?latlng={},{}&key=AIzaSyB2aJkKwaakfAgYg7mx_eol3-4iPFYdWXw"
+        url = "https://maps.googleapis.com/maps/api/geocode/json?latlng={}," \
+              "{}&key=AIzaSyB2aJkKwaakfAgYg7mx_eol3-4iPFYdWXw "
 
         # section to get places (a - b)
         # point where i finish
@@ -209,6 +206,14 @@ class SteperByRoutes(APIView):
 
         timeb = datetime.datetime.now()
         print (timeb - timea).total_seconds()
+
+        # 4 - 10 Dormir 6 horas
+        # 10 - 10:30 Baño
+        # 11 - 7 trabajar
+        # 7 - 8 Camino Trabajo
+        # 8 - 3 trabajar
+        # 3 - 4 camino a la casa
+
 
         # section to cross routes
         # get route a second route
@@ -245,5 +250,5 @@ class SteperByRoutes(APIView):
             "punto_x": place_middle
         }
         timec = datetime.datetime.now()
-        print (timec - timeb).total_seconds()
+        print (timec - timea).total_seconds()
         return JsonResponse(resp_obj, safe=False)

@@ -24,7 +24,7 @@ SECRET_KEY = '!nbmq43h50s%u^0wds!8(!8aq8m@%n@uuf_wp2cjfr9lxt9swa'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-LOCAL = True
+LOCAL = False
 
 ALLOWED_HOSTS = ["www.mirutajuarez.com","mirutajuarez.com"]
 ALLOWED_HOSTS = ["*"]

@@ -1,16 +1,15 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-import os
-
 import datetime
+import os
+import sys
+
 import requests
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.gis.geos import GEOSGeometry
-from django.contrib.gis.geos import GeometryCollection
 from django.contrib.gis.geos.linestring import LineString
-from django.contrib.gis.geos.point import Point
-from django.contrib.gis.measure import Distance, D
+from django.contrib.gis.measure import Distance
 from django.http.response import JsonResponse
 from django.shortcuts import render
 from django.views.generic.base import View
@@ -21,6 +20,10 @@ from ProcessKMLFile import ProcessKMLFile
 from backprocess.models import Ruta, RutaCoordenda
 from inicio.FormUpload import FormUpload
 from mirutajrz.settings import BASE_DIR
+
+
+reload(sys)
+sys.setdefaultencoding('utf-8')
 
 
 class InicioView(View):

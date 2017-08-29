@@ -2,22 +2,21 @@
 from __future__ import unicode_literals
 
 import os
-import requests
 
+import requests
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.gis.db.models.functions import Distance as qDistance
 from django.contrib.gis.geos import GEOSGeometry
 from django.contrib.gis.geos.linestring import LineString
-from django.contrib.gis.measure import Distance
+from django.contrib.gis.geos.point import Point
+from django.contrib.gis.measure import Distance, D
 from django.http.response import JsonResponse
 from django.shortcuts import render
 from django.views.generic.base import View
-from pykml import parser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from ProcessKMLFile import ProcessKMLFile
-from backprocess.models import Ruta, RutaCoordenda, NodosRutas
+from backprocess.models import Ruta, RutaCoordenda
 from inicio.FormUpload import FormUpload
 from mirutajrz.settings import BASE_DIR
 
@@ -112,11 +111,11 @@ class GetRuta(APIView):
         point_of_user = GEOSGeometry("POINT({} {})".format(lon_in, lat_in))
         point_to_go = GEOSGeometry("POINT({} {})".format(lon_go, lat_go))
 
-        #revisa si se puede llegar en una sola ruta
+        # revisa si se puede llegar en una sola ruta
         rutas_salida = Ruta.objects.filter(puntos__distance_lte=(point_of_user, Distance(m=self.max_distance)))
         rutas_salida = rutas_salida.filter(puntos__distance_lte=(point_to_go, Distance(m=self.max_distance)))
 
-        #en caso de no poder intenta encontrar una ruta que transborde
+        # en caso de no poder intenta encontrar una ruta que transborde
         if len(rutas_salida) <= 0:
             rutas_salida = self.transborde(point_of_user, point_to_go)
             return Response(data=rutas_salida, status=200)
@@ -126,7 +125,7 @@ class GetRuta(APIView):
         for ruta in rutas_salida:
             obj = {}
             obj["id"] = ruta.pk
-            obj["nombre"] =ruta.nombre
+            obj["nombre"] = ruta.nombre
             obj["url"] = str(ruta.http_kml)
             obj["kml"] = str(ruta.kml)
             rutas_to_send.append(obj)
@@ -137,8 +136,6 @@ class GetRuta(APIView):
             rutas_to_send = self.transborde(point_of_user, point_to_go)
             return Response(data=rutas_to_send, status=200)
 
-
-
     def transborde(self, punto_partida, punto_final):
         rutas_salida = Ruta.objects.filter(puntos__distance_lte=(punto_partida, Distance(m=self.max_distance)))
         ruta_llegada = Ruta.objects.filter(puntos__distance_lte=(punto_final, Distance(m=self.max_distance)))
@@ -146,7 +143,7 @@ class GetRuta(APIView):
         opciones = []
         for ruta in rutas_salida:
             print ruta
-            crosses =  Ruta.objects.filter(puntos__intersects=ruta.puntos, pk__in=llegadas_ids)
+            crosses = Ruta.objects.filter(puntos__intersects=ruta.puntos, pk__in=llegadas_ids)
             ruta_obj = {}
             if len(crosses) > 0:
                 ruta_obj["nombre"] = ruta.nombre
@@ -181,7 +178,7 @@ class SteperByRoutes(APIView):
         data_post = request.data
         lat_go = data_post.get("lat_go", "")
         lon_go = data_post.get("lon_go", "")
-        lat_in = data_post.get("lat_go", "")
+        lat_in = data_post.get("lat_in", "")
         lon_in = data_post.get("lon_go", "")
         ruta_a = data_post.get("ruta_a", None)
         ruta_b = data_post.get("ruta_b", None)
@@ -191,6 +188,7 @@ class SteperByRoutes(APIView):
         # section to get places (a - b)
         # point where i finish
         url_go = url.format(lat_go, lon_go)
+        print url_go
         request_go = requests.request("get", url_go)
         json_go = request_go.json()
         place_go = json_go.get("results")[0].get("formatted_address")
@@ -202,5 +200,48 @@ class SteperByRoutes(APIView):
         place_in = json_in.get("results")[0].get("formatted_address")
 
         # section to cross routes
+        # get route a second route
+        ruta_go = Ruta.objects.get(id=ruta_a)
+        print ruta_go
+        puntos_go = ruta_go.puntos
+        array_puntos_go = puntos_go.array
 
-        return JsonResponse(request_go.json(), safe=False)
+        # get route b first route
+        ruta_in = Ruta.objects.get(id=ruta_b)
+        print ruta_in
+        puntos_in = ruta_in.puntos
+        array_puntos_in = puntos_in.array
+
+        array_nodos = []
+        for a in array_puntos_go:
+            point_a = GEOSGeometry('SRID=4326;POINT({} {})'.format(a[0], a[1]))
+            for b in array_puntos_in:
+                point_b = GEOSGeometry('SRID=4326;POINT({} {})'.format(b[0], b[1]))
+                distance = D(m=point_a.distance(point_b)).m * 100
+                print distance, point_a, point_b
+                if distance == 0:
+
+                    array_nodos.append((a, b))
+
+        print array_nodos
+        a = array_nodos[0][0]
+
+        url = "https://maps.googleapis.com/maps/api/geocode/json?latlng={},{}&key=AIzaSyB2aJkKwaakfAgYg7mx_eol3-4iPFYdWXw"
+
+        url_in = url.format(a[1], a[0])
+        print url_in
+        request_in = requests.request("get", url_in)
+        json_in = request_in.json()
+        place_in = json_in.get("results")[0].get("formatted_address")
+
+        print place_in
+
+        # ruta_go = Ruta.objects.get(pk=ruta_a)
+
+        # define response object
+        resp_obj = {
+            "punto_a": place_in,
+            "punto_b": place_go
+        }
+
+        return JsonResponse(resp_obj, safe=False)

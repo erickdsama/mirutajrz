@@ -7,6 +7,7 @@ import datetime
 import requests
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.gis.geos import GEOSGeometry
+from django.contrib.gis.geos import GeometryCollection
 from django.contrib.gis.geos.linestring import LineString
 from django.contrib.gis.geos.point import Point
 from django.contrib.gis.measure import Distance, D
@@ -217,29 +218,18 @@ class SteperByRoutes(APIView):
         ruta_in = Ruta.objects.get(id=ruta_b)
         print ruta_in
         puntos_in = ruta_in.puntos
+        print puntos_in.num_coords
         array_puntos_in = puntos_in.array
-
-        array_nodos = []
-        for a in array_puntos_go:
-            point_a = GEOSGeometry('SRID=4326;POINT({} {})'.format(a[0], a[1]))
-            for b in array_puntos_in:
-                point_b = GEOSGeometry('SRID=4326;POINT({} {})'.format(b[0], b[1]))
-                distance = D(m=point_a.distance(point_b)).m * 100
-                # print distance, point_a, point_b
-                if distance == 0:
-
-                    array_nodos.append((a, b))
-
-        print array_nodos
-        a = array_nodos[0][0]
-
+        array_nodos  = puntos_in.intersection(puntos_go).tuple
+        a = array_nodos
+        print "sdsadas", a
         url = "https://maps.googleapis.com/maps/api/geocode/json?latlng={},{}&key=AIzaSyB2aJkKwaakfAgYg7mx_eol3-4iPFYdWXw"
 
-        url_in = url.format(a[1], a[0])
+        url_in = url.format(a[0][1], a[0][0])
         print url_in
         request_in = requests.request("get", url_in)
         json_in = request_in.json()
-        place_in = json_in.get("results")[0].get("formatted_address")
+        place_middle = json_in.get("results")[0].get("formatted_address")
 
         print place_in
 
@@ -248,7 +238,8 @@ class SteperByRoutes(APIView):
         # define response object
         resp_obj = {
             "punto_a": place_in,
-            "punto_b": place_go
+            "punto_b": place_go,
+            "punto_x": place_middle
         }
         timec = datetime.datetime.now()
         print (timec - timeb).total_seconds()

@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 import os
 
+import datetime
 import requests
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.gis.geos import GEOSGeometry
@@ -175,6 +176,8 @@ class GetRuta(APIView):
 
 class SteperByRoutes(APIView):
     def post(self, request):
+        timea = datetime.datetime.now()
+
         data_post = request.data
         lat_go = data_post.get("lat_go", "")
         lon_go = data_post.get("lon_go", "")
@@ -199,6 +202,10 @@ class SteperByRoutes(APIView):
         json_in = request_in.json()
         place_in = json_in.get("results")[0].get("formatted_address")
 
+
+        timeb = datetime.datetime.now()
+        print (timeb - timea).total_seconds()
+
         # section to cross routes
         # get route a second route
         ruta_go = Ruta.objects.get(id=ruta_a)
@@ -218,7 +225,7 @@ class SteperByRoutes(APIView):
             for b in array_puntos_in:
                 point_b = GEOSGeometry('SRID=4326;POINT({} {})'.format(b[0], b[1]))
                 distance = D(m=point_a.distance(point_b)).m * 100
-                print distance, point_a, point_b
+                # print distance, point_a, point_b
                 if distance == 0:
 
                     array_nodos.append((a, b))
@@ -243,5 +250,6 @@ class SteperByRoutes(APIView):
             "punto_a": place_in,
             "punto_b": place_go
         }
-
+        timec = datetime.datetime.now()
+        print (timec - timeb).total_seconds()
         return JsonResponse(resp_obj, safe=False)

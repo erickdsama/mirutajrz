@@ -182,7 +182,7 @@ class SteperByRoutes(APIView):
         lat_go = data_post.get("lat_go", "")
         lon_go = data_post.get("lon_go", "")
         lat_in = data_post.get("lat_in", "")
-        lon_in = data_post.get("lon_go", "")
+        lon_in = data_post.get("lon_in", "")
         ruta_a = data_post.get("ruta_a", None)
         ruta_b = data_post.get("ruta_b", None)
 
@@ -199,6 +199,7 @@ class SteperByRoutes(APIView):
 
         # point where i start
         url_in = url.format(lat_in, lon_in)
+        print "aqui empiezo ->", url_in
         request_in = requests.request("get", url_in)
         json_in = request_in.json()
         place_in = json_in.get("results")[0].get("formatted_address")
@@ -232,6 +233,10 @@ class SteperByRoutes(APIView):
         a = array_nodos
         print "sdsadas", a
         url = "https://maps.googleapis.com/maps/api/geocode/json?latlng={},{}&key=AIzaSyB2aJkKwaakfAgYg7mx_eol3-4iPFYdWXw"
+
+        print "inicia lectura de nodos"
+        for nodo in array_nodos:
+            print nodo
 
         url_in = url.format(a[0][1], a[0][0])
         print url_in

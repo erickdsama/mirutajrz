@@ -9,6 +9,7 @@ import requests
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.gis.geos import GEOSGeometry
 from django.contrib.gis.geos.linestring import LineString
+from django.contrib.gis.geos.point import Point
 from django.contrib.gis.measure import Distance
 from django.http.response import JsonResponse
 from django.shortcuts import render
@@ -176,8 +177,6 @@ class GetRuta(APIView):
 
 class SteperByRoutes(APIView):
     def post(self, request):
-        timea = datetime.datetime.now()
-
         data_post = request.data
         lat_go = data_post.get("lat_go", "")
         lon_go = data_post.get("lon_go", "")
@@ -192,7 +191,7 @@ class SteperByRoutes(APIView):
         # section to get places (a - b)
         # point where i finish
         url_go = url.format(lat_go, lon_go)
-        print url_go
+        print "allá voy -> ", url_go
         request_go = requests.request("get", url_go)
         json_go = request_go.json()
         place_go = json_go.get("results")[0].get("formatted_address")
@@ -204,56 +203,91 @@ class SteperByRoutes(APIView):
         json_in = request_in.json()
         place_in = json_in.get("results")[0].get("formatted_address")
 
-
-        timeb = datetime.datetime.now()
-        print (timeb - timea).total_seconds()
-
-        # 4 - 10 Dormir 6 horas
-        # 10 - 10:30 Baño
-        # 11 - 7 trabajar
-        # 7 - 8 Camino Trabajo
-        # 8 - 3 trabajar
-        # 3 - 4 camino a la casa
-
-
         # section to cross routes
+
         # get route a second route
         ruta_go = Ruta.objects.get(id=ruta_a)
-        print ruta_go
         puntos_go = ruta_go.puntos
-        array_puntos_go = puntos_go.array
 
         # get route b first route
         ruta_in = Ruta.objects.get(id=ruta_b)
-        print ruta_in
         puntos_in = ruta_in.puntos
-        print puntos_in.num_coords
-        array_puntos_in = puntos_in.array
+
+        # get intersections points
         array_nodos  = puntos_in.intersection(puntos_go).tuple
-        a = array_nodos
-        print "sdsadas", a
-        url = "https://maps.googleapis.com/maps/api/geocode/json?latlng={},{}&key=AIzaSyB2aJkKwaakfAgYg7mx_eol3-4iPFYdWXw"
 
-        print "inicia lectura de nodos"
-        for nodo in array_nodos:
-            print nodo
+        ls = LineString(array_nodos)
+        ls.set_srid(4326)
+        ls.transform(3857)
+        print ls.length
+        print ls.num_points
 
-        url_in = url.format(a[0][1], a[0][0])
-        print url_in
-        request_in = requests.request("get", url_in)
-        json_in = request_in.json()
-        place_middle = json_in.get("results")[0].get("formatted_address")
+        # distance / puntos = distancia entre puntos
+        nodos_opcionales = []
+        if (ls.length / ls.num_points ) > 200:
+            print "puntos distantes, buscar mejor opción"
+            pointfirst = Point(array_nodos[0])
+            pointfirst.set_srid(4326)
+            pointfirst.transform(3857)
+            for nodo in array_nodos:
+                nodo_compare = Point(nodo)
+                nodo_compare.set_srid(4326)
+                nodo_compare.transform(3857)
+                distance = nodo_compare.distance(pointfirst)
+                # si esta separado o es el mismo lo agregamos como opcion
+                if distance > 500 or distance == 0:
+                    url_in = url.format(nodo[1], nodo[0])
+                    request_in = requests.request("get", url_in)
+                    json_in = request_in.json()
+                    place_middle = json_in.get("results")[0].get("formatted_address")
+                    punto_obj = {
+                        "lat":nodo[0],
+                        "lon":nodo[1],
+                        "name": place_middle
+                    }
+                    nodos_opcionales.append(punto_obj)
+                    print place_middle
 
-        print place_in
-
-        # ruta_go = Ruta.objects.get(pk=ruta_a)
+        else:
+            nodo = array_nodos[0]
+            url_in = url.format(nodo[1], nodo[0])
+            request_in = requests.request("get", url_in)
+            json_in = request_in.json()
+            place_middle = json_in.get("results")[0].get("formatted_address")
+            punto_obj = {
+                "lat": nodo[0],
+                "lon": nodo[1],
+                "name": place_middle
+            }
+            nodos_opcionales.append(punto_obj)
 
         # define response object
         resp_obj = {
-            "punto_a": place_in,
-            "punto_b": place_go,
-            "punto_x": place_middle
+            "punto_a": {"lugar":place_in, "ruta":ruta_in.nombre},
+            "punto_b": {"lugar":place_go, "ruta":ruta_go.nombre},
+            "puntos_x": nodos_opcionales
         }
-        timec = datetime.datetime.now()
-        print (timec - timea).total_seconds()
-        return JsonResponse(resp_obj, safe=False)
+        resp = self.create_steps(resp_obj)
+        return JsonResponse(resp, safe=False)
+
+
+    def create_steps(self, objs):
+        pasos = []
+        obj_a = objs["punto_a"]
+        obj_b = objs["punto_b"]
+        obj_x = objs["puntos_x"][0]
+
+        step = { "step": "Estas en {} ".format(obj_a["lugar"].split(",")[0])}
+        pasos.append(step)
+        step = { "step": "Toma la ruta {} ".format(obj_a["ruta"])}
+        pasos.append(step)
+        step = { "step": "Baja en {}".format(obj_x["name"].split(",")[0])}
+        pasos.append(step)
+        step = { "step": "Toma la linea {} ".format(obj_b["ruta"])}
+        pasos.append(step)
+        step = { "step": "Te llevara hasta {}".format(obj_b["lugar"].split(",")[0])}
+        pasos.append(step)
+
+        return  pasos
+
+

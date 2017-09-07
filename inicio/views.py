@@ -282,17 +282,17 @@ class SteperByRoutes(APIView):
         pasos = []
         obj_a = objs["punto_a"]
         obj_b = objs["punto_b"]
-        obj_x = objs["puntos_x"][0]
-        obj_x2 = objs["puntos_x"][1]
+        obj_x = objs["puntos_x"]
 
         step = {"step": "Estas en {} ".format(obj_a["lugar"].split(",")[0])}
         pasos.append(step)
         step = {"step": "Toma la ruta {} ".format(obj_a["ruta"])}
         pasos.append(step)
-        step = {"step": "Baja en {}".format(obj_x["name"].split(",")[0])}
-        pasos.append(step)
-        step = {"step": "Baja en {}".format(obj_x2["name"].split(",")[0])}
-        pasos.append(step)
+
+        for punto in obj_x:
+            step = {"step": "Baja en {}".format(punto["name"].split(",")[0])}
+            pasos.append(step)
+
         step = {"step": "Toma la linea {} ".format(obj_b["ruta"])}
         pasos.append(step)
         step = {"step": "Te llevara hasta {}".format(obj_b["lugar"].split(",")[0])}

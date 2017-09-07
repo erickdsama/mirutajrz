@@ -7,12 +7,25 @@ from __future__ import unicode_literals
 from django.db import models
 from django.contrib.gis.db import models as models_postgis
 
+
+class Linea(models.Model):
+    nombre = models.CharField(max_length=30)
+    color = models.CharField(max_length=10)
+
+    def __unicode__(self):
+        return self.nombre
+
+    class Meta:
+        verbose_name = "Line"
+        verbose_name_plural = "Lineas"
+
 class Ruta(models.Model):
     nombre = models.CharField(max_length=50)
     color = models.CharField(max_length=10)
     kml = models.FileField(upload_to="kml_files")
     http_kml = models.CharField(max_length=250,)
     puntos = models_postgis.LineStringField(null=True)
+    linea = models_postgis.ForeignKey(Linea, null=True)
 
     def __unicode__(self):
         return self.nombre

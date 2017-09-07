@@ -22,7 +22,6 @@ from backprocess.models import Ruta, RutaCoordenda
 from inicio.FormUpload import FormUpload
 from mirutajrz.settings import BASE_DIR
 
-
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
@@ -156,7 +155,7 @@ class GetRuta(APIView):
 
                 for cross in crosses:
                     cross_obj = {}
-                    cross_obj["nombre"] = cross.nombre
+                    cross_obj["nombre"] = cross.nombrez
                     cross_obj["url"] = cross.http_kml
                     cross_obj["kml"] = str(cross.kml)
                     cross_obj["id"] = str(cross.pk)
@@ -214,8 +213,17 @@ class SteperByRoutes(APIView):
         puntos_in = ruta_in.puntos
 
         # get intersections points
-        array_nodos  = puntos_in.intersection(puntos_go).tuple
+        array_nodos = puntos_in.intersection(puntos_go).tuple
+        array_nodos_clean = []
+        for nodo in array_nodos:
+            if type(nodo[0]) is tuple:
+                array_nodos_clean.append(nodo[0])
+            else:
+                array_nodos_clean.append(nodo)
 
+        array_nodos = array_nodos_clean
+
+        print array_nodos[0]
         ls = LineString(array_nodos)
         ls.set_srid(4326)
         ls.transform(3857)
@@ -224,7 +232,7 @@ class SteperByRoutes(APIView):
 
         # distance / puntos = distancia entre puntos
         nodos_opcionales = []
-        if (ls.length / ls.num_points ) > 200:
+        if (ls.length / ls.num_points) > 200:
             print "puntos distantes, buscar mejor opción"
             pointfirst = Point(array_nodos[0])
             pointfirst.set_srid(4326)
@@ -241,8 +249,8 @@ class SteperByRoutes(APIView):
                     json_in = request_in.json()
                     place_middle = json_in.get("results")[0].get("formatted_address")
                     punto_obj = {
-                        "lat":nodo[0],
-                        "lon":nodo[1],
+                        "lat": nodo[0],
+                        "lon": nodo[1],
                         "name": place_middle
                     }
                     nodos_opcionales.append(punto_obj)
@@ -263,31 +271,31 @@ class SteperByRoutes(APIView):
 
         # define response object
         resp_obj = {
-            "punto_a": {"lugar":place_in, "ruta":ruta_in.nombre},
-            "punto_b": {"lugar":place_go, "ruta":ruta_go.nombre},
+            "punto_a": {"lugar": place_in, "ruta": ruta_in.nombre},
+            "punto_b": {"lugar": place_go, "ruta": ruta_go.nombre},
             "puntos_x": nodos_opcionales
         }
         resp = self.create_steps(resp_obj)
         return JsonResponse(resp, safe=False)
-
 
     def create_steps(self, objs):
         pasos = []
         obj_a = objs["punto_a"]
         obj_b = objs["punto_b"]
         obj_x = objs["puntos_x"][0]
+        obj_x2 = objs["puntos_x"][1]
 
-        step = { "step": "Estas en {} ".format(obj_a["lugar"].split(",")[0])}
+        step = {"step": "Estas en {} ".format(obj_a["lugar"].split(",")[0])}
         pasos.append(step)
-        step = { "step": "Toma la ruta {} ".format(obj_a["ruta"])}
+        step = {"step": "Toma la ruta {} ".format(obj_a["ruta"])}
         pasos.append(step)
-        step = { "step": "Baja en {}".format(obj_x["name"].split(",")[0])}
+        step = {"step": "Baja en {}".format(obj_x["name"].split(",")[0])}
         pasos.append(step)
-        step = { "step": "Toma la linea {} ".format(obj_b["ruta"])}
+        step = {"step": "Baja en {}".format(obj_x2["name"].split(",")[0])}
         pasos.append(step)
-        step = { "step": "Te llevara hasta {}".format(obj_b["lugar"].split(",")[0])}
+        step = {"step": "Toma la linea {} ".format(obj_b["ruta"])}
+        pasos.append(step)
+        step = {"step": "Te llevara hasta {}".format(obj_b["lugar"].split(",")[0])}
         pasos.append(step)
 
-        return  pasos
-
-
+        return pasos

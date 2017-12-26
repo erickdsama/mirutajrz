@@ -2,9 +2,6 @@
 from __future__ import unicode_literals
 
 from django.http.response import JsonResponse
-from django.shortcuts import render
-
-# Create your views here.
 from rest_framework.response import Response
 from rest_framework.views import APIView
 

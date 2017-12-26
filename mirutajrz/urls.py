@@ -24,6 +24,7 @@ from mirutajrz import settings
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r"^", include("inicio.urls")),
+    url(r"^", include("backprocess.urls")),
     url(r'^static/(?P<path>.*)$',
         serve, {'document_root': settings.STATIC_ROOT}),
     url(r'^media/(?P<path>.*)$',

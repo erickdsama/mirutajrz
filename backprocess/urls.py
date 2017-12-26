@@ -4,5 +4,5 @@ from backprocess.views import SyncTrack
 from inicio.views import InicioView, ProcesaArchivo, GetRuta, UploadFile, SteperByRoutes
 
 urlpatterns = [
-    url(r'^api/sync/$', SyncTrack, name="Sync"),
+    url(r'^api/sync/$', SyncTrack.as_view(), name="Sync"),
 ]

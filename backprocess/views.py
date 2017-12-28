@@ -16,5 +16,6 @@ class RutasLineas(APIView):
 class SyncTrack(APIView):
 
     def post(self, request):
-
+        data_post = request.data
+        print data_post
         return Response(data={}, status=200)

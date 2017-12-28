@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from django.contrib.gis.geos import GEOSGeometry
 from django.http.response import JsonResponse
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -40,6 +41,15 @@ class SyncTrack(APIView):
                 date_s = log.get("date","")
                 date_d  = parse_datetime(date_s)
 
+                latlng_clean = str(latlng).replace("(","").replace("}","")
+                print latlng_clean
+                latlng_ar = latlng_clean.split(",")
+                print latlng_ar
+
+                lat = latlng_ar[0]
+                lon = latlng_ar[1]
+
+                point = GEOSGeometry("POINT({} {})".format(lon, lat))
                 print date_d
 
                 obj = TrackUsuario.objects.create(latlng=latlng, fecha=date_d)

@@ -6,6 +6,9 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.utils.dateparse import parse_datetime
 
+from backprocess.models import TrackUsuario
+
+
 class RutasLineas(APIView):
 
     def post(self, request):
@@ -31,6 +34,7 @@ class SyncTrack(APIView):
         print logs
         print "*"*30
 
+        data_created = []
         for log in logs:
             latlng = log.get("latlng","")
             date_s = log.get("date","")
@@ -38,4 +42,12 @@ class SyncTrack(APIView):
 
             print date_d
 
-        return Response(data={}, status=200)
+            obj = TrackUsuario.objects.create(latlng=latlng, fecha=date_d)
+            data_created.append(obj)
+
+        data = {
+            "created": data_created
+        }
+
+
+        return Response(data=data, status=200)

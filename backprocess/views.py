@@ -22,19 +22,9 @@ class SyncTrack(APIView):
 
     def post(self, request):
         data_post = request.data
-        # datos que llegan
-        print "*"*30
-        print data_post
-        print "*"*30
 
-        print """
-            Tomando los datos :P
-        """
         # empeazmos a tomar los datos
         logs = data_post.get("logs",[])
-        print "*"*30
-        print logs
-        print "*"*30
         try:
             data_created = []
             for log in logs:
@@ -43,23 +33,14 @@ class SyncTrack(APIView):
                 date_d  = parse_datetime(date_s)
 
                 latlng_clean = str(latlng).replace("(","").replace(")","")
-                print latlng_clean
                 latlng_ar = latlng_clean.split(",")
-                print latlng_ar
 
                 lat = latlng_ar[0]
                 lon = latlng_ar[1]
-                print "*"*30
-                print lat
-                print lon
 
                 latlng = GEOSGeometry("POINT({} {})".format(str(lon), str(lat)))
-#                point = GEOSGeometry("POINT({} {})".format(-106.354794, 31.627863))
-                print date_d
 
                 obj = TrackUsuario.objects.create(latlng=latlng, fecha=date_d)
-                print "aqui yo estoy"
-#                data_created.append(obj)
 
             data = {
                 "created": data_created

@@ -50,7 +50,7 @@ class SyncTrack(APIView):
                 lat = latlng_ar[0]
                 lon = latlng_ar[1]
 
-                point = GEOSGeometry("POINT({} {})".format(lon, lat))
+                point = GEOSGeometry("POINT({} {})".format(str(lon), str(lat)))
                 print date_d
 
                 obj = TrackUsuario.objects.create(latlng=latlng, fecha=date_d)

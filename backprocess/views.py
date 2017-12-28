@@ -49,6 +49,9 @@ class SyncTrack(APIView):
 
                 lat = latlng_ar[0]
                 lon = latlng_ar[1]
+                print "*"*30
+                print lat
+                print lon
 
                 point = GEOSGeometry("POINT({} {})".format(str(lon), str(lat)))
                 print date_d

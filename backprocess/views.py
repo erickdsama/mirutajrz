@@ -42,7 +42,7 @@ class SyncTrack(APIView):
                 date_s = log.get("date","")
                 date_d  = parse_datetime(date_s)
 
-                latlng_clean = str(latlng).replace("(","").replace("}","")
+                latlng_clean = str(latlng).replace("(","").replace(")","")
                 print latlng_clean
                 latlng_ar = latlng_clean.split(",")
                 print latlng_ar
@@ -53,11 +53,13 @@ class SyncTrack(APIView):
                 print lat
                 print lon
 
-                point = GEOSGeometry("POINT({} {})".format(str(lon), str(lat)))
+                latlng = GEOSGeometry("POINT({} {})".format(str(lon), str(lat)))
+#                point = GEOSGeometry("POINT({} {})".format(-106.354794, 31.627863))
                 print date_d
 
                 obj = TrackUsuario.objects.create(latlng=latlng, fecha=date_d)
-                data_created.append(obj)
+                print "aqui yo estoy"
+#                data_created.append(obj)
 
             data = {
                 "created": data_created

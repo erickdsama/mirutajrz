@@ -82,3 +82,10 @@ class RutaCoordenda(models_postgis.Model):
 
     def __unicode__(self):
         return self.ruta.nombre
+
+class TrackUsuario(models_postgis.Model):
+    latlng = models_postgis.PointField()
+    fecha = models_postgis.DateTimeField()
+
+    def __unicode__(self):
+        return self.ruta.fecha

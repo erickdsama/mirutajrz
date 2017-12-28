@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 from django.http.response import JsonResponse
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
+from django.utils.dateparse import parse_datetime
 
 class RutasLineas(APIView):
 
@@ -32,7 +32,10 @@ class SyncTrack(APIView):
         print "*"*30
 
         for log in logs:
-            print log.get("latlng",".-.")
+            latlng = log.get("latlng","")
+            date_s = log.get("date","")
+            date_d  = parse_datetime(date_s)
 
+            print date_d
 
         return Response(data={}, status=200)

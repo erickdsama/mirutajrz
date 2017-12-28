@@ -88,4 +88,4 @@ class TrackUsuario(models_postgis.Model):
     fecha = models_postgis.DateTimeField()
 
     def __unicode__(self):
-        return self.ruta.fecha
+        return self.fecha

@@ -33,21 +33,27 @@ class SyncTrack(APIView):
         print "*"*30
         print logs
         print "*"*30
+        try:
+            data_created = []
+            for log in logs:
+                latlng = log.get("latlng","")
+                date_s = log.get("date","")
+                date_d  = parse_datetime(date_s)
 
-        data_created = []
-        for log in logs:
-            latlng = log.get("latlng","")
-            date_s = log.get("date","")
-            date_d  = parse_datetime(date_s)
+                print date_d
 
-            print date_d
+                obj = TrackUsuario.objects.create(latlng=latlng, fecha=date_d)
+                data_created.append(obj)
 
-            obj = TrackUsuario.objects.create(latlng=latlng, fecha=date_d)
-            data_created.append(obj)
+            data = {
+                "created": data_created
+            }
+            return Response(data=data, status=200)
+        except Exception as e:
+            print e
+            data = {
+                "error": e.message,
+                "data": e
+            }
+            return Response(data=data, status=200)
 
-        data = {
-            "created": data_created
-        }
-
-
-        return Response(data=data, status=200)

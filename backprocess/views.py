@@ -31,5 +31,8 @@ class SyncTrack(APIView):
         print logs
         print "*"*30
 
+        for log in logs:
+            print log.get("latlng",".-.")
+
 
         return Response(data={}, status=200)

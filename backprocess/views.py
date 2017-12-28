@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 from django.contrib.gis.geos import GEOSGeometry
+from django.contrib.gis.geos.point import Point
 from django.http.response import JsonResponse
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -49,7 +50,7 @@ class SyncTrack(APIView):
                 lat = latlng_ar[0]
                 lon = latlng_ar[1]
 
-                point = GEOSGeometry("POINT({} {})".format(lon, lat))
+                point = Point("POINT({} {})".format(lon, lat))
                 print date_d
 
                 obj = TrackUsuario.objects.create(latlng=latlng, fecha=date_d)

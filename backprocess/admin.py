@@ -4,6 +4,6 @@ from __future__ import unicode_literals
 from django.contrib import admin
 
 # Register your models here.
-from backprocess.models import Ruta, DetalleRuta, InfoRutaUsuario, RutaCoordenda, NodosRutas, TrackUsuario
+from backprocess.models import Ruta, DetalleRuta, InfoRutaUsuario, RutaCoordenda, NodosRutas, TrackUsuario, Linea
 
-admin.site.register({Ruta, DetalleRuta, InfoRutaUsuario, RutaCoordenda, NodosRutas, TrackUsuario})
+admin.site.register({Ruta, DetalleRuta, InfoRutaUsuario, RutaCoordenda, NodosRutas, TrackUsuario, Linea})

@@ -49,7 +49,7 @@ class UploadFile(FormView):
         form = self.get_form(form_class)
         files = request.FILES.getlist('kml')
 
-        form = FormUpload(request.POST, request.FILES)
+        # form = FormUpload(request.POST, request.FILES)
         if form.is_valid():
             print "valido"
             for file in files:

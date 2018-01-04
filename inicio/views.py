@@ -33,7 +33,7 @@ class InicioView(View):
         return render(request, self.template_name)
 
 
-class UploadFile(View):
+class UploadFile(FormUpload):
     template_name = "upload.html"
 
     def get(self, request):
@@ -43,30 +43,36 @@ class UploadFile(View):
         })
 
     def post(self, request):
+
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)
+        files = request.FILES.getlist('kml')
+
         form = FormUpload(request.POST, request.FILES)
         if form.is_valid():
             print "valido"
-            file = request.FILES['kml']
-            # self.handle_uploaded_file(request.FILES['kml'])
-            kml_process = ProcessKMLFile(request.FILES['kml'])
-            data_kml = kml_process.file_to_objet()
+            for file in files:
+                # file = request.FILES['kml']
+                # self.handle_uploaded_file(request.FILES['kml'])
+                kml_process = ProcessKMLFile(file)
+                data_kml = kml_process.file_to_objet()
 
-            ruta = form.save()
-            ruta.nombre = data_kml.get("name", "")
-            ruta.color = data_kml.get("colorLine", "")
-            ruta.http_kml = ""
+                ruta = form.save()
+                ruta.nombre = data_kml.get("name", "")
+                ruta.color = data_kml.get("colorLine", "")
+                ruta.http_kml = ""
 
-            lista_nodos = []
-            lista = []
-            for coord in data_kml.get("coordinates"):
-                split_coord = coord.split(",")
-                x = split_coord[0]
-                y = split_coord[1]
-                z = split_coord[2]
-                point = GEOSGeometry("POINT({0} {1})".format(x, y))
-                lista.append(point)
-            ruta.puntos = LineString(lista)
-            ruta.save()
+                lista_nodos = []
+                lista = []
+                for coord in data_kml.get("coordinates"):
+                    split_coord = coord.split(",")
+                    x = split_coord[0]
+                    y = split_coord[1]
+                    z = split_coord[2]
+                    point = GEOSGeometry("POINT({0} {1})".format(x, y))
+                    lista.append(point)
+                ruta.puntos = LineString(lista)
+                ruta.save()
         else:
             print "no valido"
         return render(request, self.template_name, context={

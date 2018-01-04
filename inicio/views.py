@@ -61,7 +61,7 @@ class UploadFile(FormView):
                 ruta = form.save()
                 ruta.nombre = data_kml.get("name", "")
 
-                print "procesando.... {}".format(ruta.nombre)
+                print "procesando.... {}".format( data_kml.get("name", ""))
 
                 ruta.color = data_kml.get("colorLine", "")
                 ruta.http_kml = ""

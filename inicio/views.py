@@ -49,18 +49,15 @@ class UploadFile(FormView):
         form = self.get_form(form_class)
         files = request.FILES.getlist('kml')
 
-        # form = FormUpload(request.POST, request.FILES)
+        form = FormUpload(request.POST, request.FILES)
         if form.is_valid():
             print "valido"
             for file in files:
-                # file = request.FILES['kml']
-                # self.handle_uploaded_file(request.FILES['kml'])
                 kml_process = ProcessKMLFile(file)
                 data_kml = kml_process.file_to_objet()
 
-                ruta = file.save()
+                ruta = Ruta.objects.create(kml=file)
                 ruta.nombre = data_kml.get("name", "")
-
                 print "procesando.... {}".format( data_kml.get("name", ""))
 
                 ruta.color = data_kml.get("colorLine", "")

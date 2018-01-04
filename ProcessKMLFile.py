@@ -20,6 +20,7 @@ class ProcessKMLFile:
             print pm.__dict__
             if hasattr(pm, "LineString"):
                 coord = str(pm.LineString.coordinates)
+                print coord.replace("\n","").replace("            ","|").replace("        ","|").split("|")[1:-1]
                 route_obj["coordinates"] = coord.replace("\n","").replace("            ","|").replace("        ","|").split("|")[1:-1]
                 style = KML_ElementMaker.Style(
                     KML_ElementMaker.LineStyle(

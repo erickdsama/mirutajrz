@@ -58,7 +58,7 @@ class UploadFile(FormView):
                 kml_process = ProcessKMLFile(file)
                 data_kml = kml_process.file_to_objet()
 
-                ruta = form.save()
+                ruta = file.save()
                 ruta.nombre = data_kml.get("name", "")
 
                 print "procesando.... {}".format( data_kml.get("name", ""))

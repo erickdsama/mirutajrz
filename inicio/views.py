@@ -13,6 +13,7 @@ from django.contrib.gis.geos.point import Point
 from django.contrib.gis.measure import Distance
 from django.http.response import JsonResponse
 from django.shortcuts import render
+from django.views.generic.edit import FormView
 from django.views.generic.base import View
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -33,17 +34,17 @@ class InicioView(View):
         return render(request, self.template_name)
 
 
-class UploadFile(FormUpload):
+class UploadFile(FormView):
     template_name = "upload.html"
+    form_class = FormUpload
 
-    def get(self, request):
+    def get(self, request, *args, **kwargs):
         form = FormUpload()
         return render(request, self.template_name, context={
             "form": form
         })
 
-    def post(self, request):
-
+    def post(self, request, *args, **kwargs):
         form_class = self.get_form_class()
         form = self.get_form(form_class)
         files = request.FILES.getlist('kml')

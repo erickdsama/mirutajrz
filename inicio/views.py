@@ -223,7 +223,7 @@ class SteperByRoutes(APIView):
         array_nodos = puntos_in.intersection(puntos_go).tuple
         array_nodos_clean = []
         for nodo in array_nodos:
-            if type(nodo[0]) is tuple:
+            if type(nodo) is tuple:
                 array_nodos_clean.append(nodo[0])
             else:
                 array_nodos_clean.append(nodo)
